@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import Swal from "sweetalert2"
 import {useNavigate} from "react-router-dom"
 import axios from "axios"
@@ -6,8 +6,9 @@ import axios from "axios"
 const RegisterProfesionista = () => {
 
   const baseURL = "https://localhost:44368/api/profesionista";
-
+  const profesionesURL ="https://localhost:44368/api/profesion"
     const navigate = useNavigate();
+    const [profesiones,setProfesiones] = useState([])
     const [profesionista,setProfesionista] = useState({
       idUsuario:0,
       nombre:"",
@@ -16,7 +17,8 @@ const RegisterProfesionista = () => {
       correo: "",
       contrasenia: "",
       descripcion: "",
-      idProfesion: 1,
+      idProfesion: 0,
+      idRol:3
     })
 
     const Registrarse = async() =>{
@@ -43,6 +45,15 @@ const RegisterProfesionista = () => {
       })
     }
 
+    const GetProfesiones = async() => {
+      await axios.get(profesionesURL)
+      .then((response) => {
+        setProfesiones(response.data);
+        console.log(response.data)
+      }).catch(error=>{
+          console.log(error)
+      })
+    }
     
 
     const handleChange=e=>{
@@ -69,6 +80,9 @@ const RegisterProfesionista = () => {
       }
     }
 
+    useEffect(() => {
+      GetProfesiones();
+    }, []);
   return (
     <>
     <section className="vh-100">
@@ -139,13 +153,17 @@ const RegisterProfesionista = () => {
                 <label className="form-label" htmlFor="form1Example13">
                   Profesion
                 </label>
+
                 <select
-                  type="text"
-                  name="profesion"
+                  type="number"
+                  name="idProfesion"
                   onChange={handleChange}
                   className="form-control form-control-lg"
                 >
-                  <option value={1}>Capintero</option>
+                {profesiones.map((prof) => (
+                  <option key={prof.idProfesion} value={prof.idProfesion}>{prof.profesion}</option>
+                
+                ))}
                 </select>
               </div>
 

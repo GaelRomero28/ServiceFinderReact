@@ -12,7 +12,8 @@ const RegisterCliente = () => {
       apellidoPaterno:"",
       apellidoMaterno: "",
       correo: "",
-      contrasenia: ""
+      contrasenia: "",
+      idRol:2
     })
 
     const handleChange=e=>{

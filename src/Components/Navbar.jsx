@@ -77,7 +77,7 @@ const NavBar = (props) => {
                 <b><NavLink className="nav-link active" aria-current="page" to="/SolicitudesEnviadas" >Mensajes Enviados</NavLink></b>
                 </li>
                 <li className="nav-item">
-                <b><NavLink className="nav-link active" aria-current="page" to="/ReseñasHechas" >Reseñas Realizadas</NavLink></b>
+                <b><NavLink className="nav-link active" aria-current="page" to="/ReseniasHechas" >Reseñas Realizadas</NavLink></b>
                 </li>
                 <li className="nav-item">
                 <b><NavLink className="nav-link active" aria-current="page" to="/MiPerfil" >MiPerfil</NavLink></b>
@@ -103,10 +103,10 @@ const NavBar = (props) => {
                   <b><NavLink className="nav-link active" aria-current="page" to="/SolicitudesRecibidas" >Solicitudes Recibidas</NavLink></b>
                 </li>
                 <li className="nav-item">
-                <b><NavLink className="nav-link active" aria-current="page" to="/ReseñasRecibidas" >Reseñas Recibidas</NavLink></b>
+                <b><NavLink className="nav-link active" aria-current="page" to="/ReseniasRecibidas" >Reseñas Recibidas</NavLink></b>
                 </li>
                 <li className="nav-item">
-                <b><NavLink className="nav-link active" aria-current="page" to="/Imagenes" >Gestion de Imagenes</NavLink></b>
+                <b><NavLink className="nav-link active" aria-current="page" to="/GestionarImagenes" >Gestion de Imagenes</NavLink></b>
                 </li>
                 <li className="nav-item">
                 <b><NavLink className="nav-link active" aria-current="page" to="/Deudas" >Deudas</NavLink></b>
