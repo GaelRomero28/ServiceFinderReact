@@ -14,11 +14,11 @@ const Login = () => {
   const cookies = new Cookies();
   const navigate = useNavigate();
 
-  const [logs,setLogs] = useState({
+  const [logs, setLogs] = useState({
     fecha: new Date(),
     descripcion: "Inicio de Sesion",
-    idUsuario: 0
-  })
+    idUsuario: 0,
+  });
 
   const [inicioSesion, setInicioSesion] = useState({
     correo: "",
@@ -39,7 +39,6 @@ const Login = () => {
       .post(baseURL, inicioSesion)
       .then((response) => {
         return response.data;
-        
       })
       .then((response) => {
         if (response.length > 0) {
@@ -55,6 +54,30 @@ const Login = () => {
           cookies.set("Rol", respuesta.idRol, { path: "/" });
           cookies.set("correo", respuesta.correo, { path: "/" });
           cookies.set("contraseña", respuesta.contrasenia, { path: "/" });
+          if (cookies.get("Rol") == 2) {
+            axios
+              .get(infoCliente + "?id=" + respuesta.idUsuario)
+              .then((response) => {
+                return response.data;
+              })
+              .then((response) => {
+                if (response.length > 0) {
+                  var respuestaCliente = response[0];
+                  console.log("es un cliente");
+                  console.log(respuestaCliente);
+                  cookies.set("idCliente", respuestaCliente.idCliente, {
+                    path: "/",
+                  });
+                  setLogs({
+                    idUsuario: cookies.get("idUsuario"),
+                  });
+                  postLogs().catch((error) => {
+                    console.log(error);
+                  });
+                  navigate("/Inicio");
+                }
+              });
+          }
           if (cookies.get("Rol") == 3) {
             axios
               .get(infoProfesionista + "?id=" + respuesta.idUsuario)
@@ -80,49 +103,39 @@ const Login = () => {
                     respuestaProfesionista.descripcion,
                     { path: "/" }
                   );
+                  setLogs({
+                    idUsuario: cookies.get("idUsuario"),
+                  });
+                  postLogs().catch((error) => {
+                    console.log(error);
+                  });
                   navigate("/GestionarImagenes");
                 }
               });
           }
-          if (cookies.get("Rol") == 2) {
-            axios
-              .get(infoCliente + "?id=" + respuesta.idUsuario)
-              .then((resp) => {
-                return resp.data;
-              })
-              .then((resp) => {
-                if (response.length > 0) {
-                  var respuestaCliente = resp[0];
-                  console.log("es un cliente");
-                  cookies.set("idCliente", respuestaCliente.idCliente, {
-                    path: "/"
-                  }
-                  );
-                  navigate("/Inicio");
-                }
-              });
-          }
-          if (cookies.get("Rol") == 1){
+          if (cookies.get("Rol") == 1) {
+            setLogs({
+              idUsuario: cookies.get("idUsuario"),
+            });
+            postLogs().catch((error) => {
+              console.log(error);
+            });
             navigate("/GestionUsuarios");
           }
-        }if(response == 0){
-          Swal.fire(
-            'Error',
-            'Correo o Contraseña incorrecto, por favor, intente de nuevo.',
-            'error'
-          )  
         }
-      })
-      .catch((error) => {
-        console.log(error);
-        Swal.fire(
-          'Error',
-          'Correo o Contraseña incorrecto, por favor, intente de nuevo.',
-          'error'
-        )
       });
   };
 
+  const postLogs = async () => {
+    await axios
+      .post(URLLogs, logs)
+      .then((response) => {
+        if (response) {
+          return;
+        }
+      })
+      .catch((error) => {});
+  };
 
   const handleNewClienteRegister = (e) => {
     navigate("/RegistrarCliente");
@@ -172,7 +185,8 @@ const Login = () => {
                 type="submit"
                 className="btn btn-primary btn-lg btn-block"
                 onClick={() => {
-                  iniciarSesion()}}
+                  iniciarSesion();
+                }}
               >
                 Iniciar Sesion
               </button>
