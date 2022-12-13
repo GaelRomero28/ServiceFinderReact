@@ -44,6 +44,9 @@ const Login = () => {
         if (response.length > 0) {
           var respuesta = response[0];
           cookies.set("idUsuario", respuesta.idUsuario, { path: "/" });
+          setLogs({
+            idUsuario: cookies.get("idUsuario"),
+          });
           cookies.set("nombre", respuesta.nombre, { path: "/" });
           cookies.set("apellidoPaterno", respuesta.apellidoPaterno, {
             path: "/",
@@ -67,9 +70,6 @@ const Login = () => {
                   console.log(respuestaCliente);
                   cookies.set("idCliente", respuestaCliente.idCliente, {
                     path: "/",
-                  });
-                  setLogs({
-                    idUsuario: cookies.get("idUsuario"),
                   });
                   postLogs().catch((error) => {
                     console.log(error);

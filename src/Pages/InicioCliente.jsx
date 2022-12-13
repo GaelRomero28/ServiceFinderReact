@@ -157,16 +157,16 @@ const Menu = (props) => {
       .post(resenias, resenaSeleccionada)
       .then((response) => {
         console.debug(response);
+        setLogs({
+          idUsuario: cookies.get("idUsuario"),
+          descripcion: "Registro una reseña",
+        });
         if (response) {
           Swal.fire(
             "Operación realizada",
             "Reseña Hecha con Exito!",
             "success"
           );
-          setLogs({
-            idUsuario: cookies.get("idUsuario"),
-            descripcion: "Registro una reseña",
-          });
           postLogs().catch((error) => {
             console.log(error);
           });
@@ -190,16 +190,16 @@ const Menu = (props) => {
       .post(solicitud, solicitudSeleccionada)
       .then((response) => {
         console.debug(response);
+        setLogs({
+          idUsuario: cookies.get("idUsuario"),
+          descripcion: "Peticion de Solicitud",
+        });
         if (response) {
           Swal.fire(
             "Operación realizada",
             "Solicitud Enviada con Exito!",
             "success"
           );
-          setLogs({
-            idUsuario: cookies.get("idUsuario"),
-            descripcion: "Peticion de Solicitud",
-          });
           postLogs().catch((error) => {
             console.log(error);
           });
