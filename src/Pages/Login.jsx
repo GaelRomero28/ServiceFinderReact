@@ -14,11 +14,11 @@ const Login = () => {
   const cookies = new Cookies();
   const navigate = useNavigate();
 
-  const [logs,setLogs] = useState({
+  const [logs, setLogs] = useState({
     fecha: new Date(),
     descripcion: "Inicio de Sesion",
-    idUsuario: 0
-  })
+    idUsuario: 0,
+  });
 
   const [inicioSesion, setInicioSesion] = useState({
     correo: "",
@@ -64,9 +64,15 @@ const Login = () => {
                 if (response.length > 0) {
                   var respuestaCliente = response[0];
                   console.log("es un cliente");
-                  console.log(respuestaCliente)
+                  console.log(respuestaCliente);
                   cookies.set("idCliente", respuestaCliente.idCliente, {
                     path: "/",
+                  });
+                  setLogs({
+                    idUsuario: cookies.get("idUsuario"),
+                  });
+                  postLogs().catch((error) => {
+                    console.log(error);
                   });
                   navigate("/Inicio");
                 }
@@ -97,32 +103,39 @@ const Login = () => {
                     respuestaProfesionista.descripcion,
                     { path: "/" }
                   );
+                  setLogs({
+                    idUsuario: cookies.get("idUsuario"),
+                  });
+                  postLogs().catch((error) => {
+                    console.log(error);
+                  });
                   navigate("/GestionarImagenes");
                 }
               });
           }
-          if (cookies.get("Rol") == 1){
+          if (cookies.get("Rol") == 1) {
+            setLogs({
+              idUsuario: cookies.get("idUsuario"),
+            });
+            postLogs().catch((error) => {
+              console.log(error);
+            });
             navigate("/GestionUsuarios");
           }
         }
-      })
-      setLogs({
-        idUsuario: cookies.get("idUsuario")
-      })
-      postLogs()
-      .catch((error) => {
-        console.log(error);
       });
   };
 
   const postLogs = async () => {
-    await axios.post(URLLogs,logs)
-    .then(response => {
-      if(response){
-      }
-    }).catch(error => {
-    })
-  }
+    await axios
+      .post(URLLogs, logs)
+      .then((response) => {
+        if (response) {
+          return;
+        }
+      })
+      .catch((error) => {});
+  };
 
   const handleNewClienteRegister = (e) => {
     navigate("/RegistrarCliente");
@@ -172,7 +185,8 @@ const Login = () => {
                 type="submit"
                 className="btn btn-primary btn-lg btn-block"
                 onClick={() => {
-                  iniciarSesion()}}
+                  iniciarSesion();
+                }}
               >
                 Iniciar Sesion
               </button>
