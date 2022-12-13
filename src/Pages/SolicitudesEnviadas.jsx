@@ -20,6 +20,8 @@ const SolicitudesEnviadas = () => {
             console.log(error)
         })
         }
+      
+      
     
     useEffect(() => {
         peticionGetSolicitudesEnviadas();

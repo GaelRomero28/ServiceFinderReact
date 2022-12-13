@@ -9,7 +9,7 @@ import Cookies from "universal-cookie";
 import { Link } from "react-router-dom";
 import star from "../assets/star.png"
 
-const Menu = (props) => {
+const Menu = () => {
   const cookies = new Cookies()
 
   const listarProfesionista = "https://localhost:44368/api/profesionista";
@@ -18,9 +18,6 @@ const Menu = (props) => {
   const profesionesURL ="https://localhost:44368/api/profesion"
   const solicitud = "https://localhost:44368/api/solicitud"
   const [imagenes, setImagenes] = useState([]);
-  const [dataProfesion, setDataProfesion] = useState({
-    profesion : ""
-  })
   const [profesiones,setProfesiones] = useState([])
   const [data, setData] = useState([]);
   const [dataResenia,setDataResenia] = useState({
@@ -52,6 +49,7 @@ const Menu = (props) => {
     idEstatus:1,
     fechaSolicitud: new Date()
   });
+  
 
   const abrirCerrarModalInsertar = (id) => {
     getProfesionistaPorId(id);
@@ -122,15 +120,6 @@ const Menu = (props) => {
      });
    };
 
-   const getImagenesProfesionista = async(id)=>{
-    await axios.get(URLImagenes+"?id=" + id)
-    .then((response) => {
-      setImagenes(response.data);
-      console.log(response.data);
-    }).catch(error=>{
-        console.log(error)
-    })
-  };
 
    const peticionPostResenia=async()=>{
     await axios.post(resenias, resenaSeleccionada)
@@ -153,7 +142,7 @@ const Menu = (props) => {
       )
     })
     abrirCerrarModalInsertar();
-    peticionGet();
+    getProfesionistas();
   }
 
   const peticionPostSolicitud =async()=>{
@@ -179,6 +168,19 @@ const Menu = (props) => {
     abrirCerrarModalContactar();
   }
 
+  const getProfesiones = () =>{
+     axios
+    .get(profesionesURL)
+    .then((response) => {
+      setProfesiones(response.data);
+      console.log(response.data)
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  }
+
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -198,15 +200,27 @@ const Menu = (props) => {
     console.log(solicitudSeleccionada);
   };
 
+  const getImagenesProfesionista = async(id)=>{
+    await axios.get(URLImagenes+"?id=" + id)
+    .then((response) => {
+      setImagenes(response.data);
+      console.log(response.data);
+    }).catch(error=>{
+        console.log(error)
+    })
+  };
 
 
   useEffect(() => {
     getProfesionistas();
+    getProfesiones();
   }, []);
 
-
-
-
+    const asignarProfesion = (id) =>{
+    
+    let prof = profesiones.find(profesion => profesion.idProfesion === id)
+    return prof.profesion
+  }
 
   return (
     <>
@@ -222,7 +236,7 @@ const Menu = (props) => {
             <div className="card-body">
               <h1 className="card-title" >
                 <div>
-                <img src={profile} alt="User" width={150}/>
+                <img src={profile} alt="" width={200}/>
                 <Link to={`/ReseniasProfesionista/${(profesionista.idProfesionista)}`} style={{marginLeft:"20px"}}>
                   <button className="btn btn-info btn-rounded btn-lg">Ver Calificaciones</button>
                   </Link>
@@ -247,7 +261,7 @@ const Menu = (props) => {
                 profesionista.apellidoMaterno}
               </p>
               </h1>
-              <h3>Profesion</h3>
+              <h3>{asignarProfesion(profesionista.idProfesion)}</h3>
             </div>
           </div>
           <hr />
@@ -305,9 +319,11 @@ const Menu = (props) => {
         <ModalHeader>Trabajos del Profesionista</ModalHeader>
         <ModalBody>
         {imagenes.map((img) =>(
-          <div className="container">
-            <img class="row" width={400} src={`data:image/png;base64,${img._Imagen}`} 
+          <div className="row">
+            <div className="column">
+            <img style={{display:"inline-block"}} width={400} src={`data:image/png;base64,${img._Imagen}`} 
             alt="Trabajos del Profesionista"/>
+            </div>
           </div>
         ))}
         </ModalBody>

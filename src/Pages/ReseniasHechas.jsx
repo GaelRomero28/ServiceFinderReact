@@ -7,8 +7,10 @@ import Cookies from "universal-cookie"
 const ReseniasHechas = () => {
     const [datosResenias,setDatosResenias] = useState([]);
     const cookies = new Cookies();
+    const [dataProfesionista,setDataProfesionista] = useState([]);
   
     const listarResenias = "https://localhost:44368/api/resena";
+    const listarProfesionista = "https://localhost:44368/api/profesionista";
   
     const peticionGetReseniasHechas= async()=>{
       await axios.get(listarResenias +"?id=" + cookies.get("idCliente"))
@@ -19,27 +21,46 @@ const ReseniasHechas = () => {
           console.log(error)
       })
       }
+
+      const getProfesionistas = ()=>{
+          axios
+         .get(listarProfesionista)
+         .then((respuesta) => {
+          setDataProfesionista(respuesta.data)
+          console.log(respuesta.data)
+        })
+         .catch((error) => {
+           console.log(error);
+         });
+       };
   
       useEffect(() => {
+        getProfesionistas();
         peticionGetReseniasHechas();
       }, []);
+
+      const asignarProfesionista = (id) =>{
+    
+        let prof = dataProfesionista.find(profesionista => profesionista.idProfesionista === id)
+        return prof.nombre + " " + prof.apellidoPaterno + " "
+      }
     return (
       <>
       <NavBar></NavBar>
-      <table className='table table-bordered' style={{padding:"10px", marginTop:"10px"}}>
-          <thead>
-              <th>Calificacion</th>
-              <th>Comentarios</th>            
-          </thead>
-          <tbody>
-            {datosResenias.map((resenias) =>(
-              <tr key={resenias.idResena}>
-                <td><b>{resenias.calificacion}</b><img width={30} src={star}></img></td>
-                <td>{resenias.comentario}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      {datosResenias.map((resenias) =>(
+      <div key={resenias.idResena}>
+        <div class="card text-left">
+          <img class="card-img-top" src="holder.js/100px180/" alt=""/>
+          <div class="card-body">
+            <h4 class="card-title">{asignarProfesionista(resenias.idProfesionista)}<b>{resenias.calificacion}</b><img width={30} src={star}></img></h4>
+            <p class="card-text">{resenias.comentario}</p>
+          </div>
+        </div>
+      </div>
+      ))}
+
+
+
   
       </>
     )

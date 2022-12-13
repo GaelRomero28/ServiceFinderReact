@@ -39,6 +39,7 @@ const Login = () => {
       .post(baseURL, inicioSesion)
       .then((response) => {
         return response.data;
+        
       })
       .then((response) => {
         if (response.length > 0) {
@@ -54,24 +55,6 @@ const Login = () => {
           cookies.set("Rol", respuesta.idRol, { path: "/" });
           cookies.set("correo", respuesta.correo, { path: "/" });
           cookies.set("contraseña", respuesta.contrasenia, { path: "/" });
-          if (cookies.get("Rol") == 2) {
-            axios
-              .get(infoCliente + "?id=" + respuesta.idUsuario)
-              .then((response) => {
-                return response.data;
-              })
-              .then((response) => {
-                if (response.length > 0) {
-                  var respuestaCliente = response[0];
-                  console.log("es un cliente");
-                  console.log(respuestaCliente)
-                  cookies.set("idCliente", respuestaCliente.idCliente, {
-                    path: "/",
-                  });
-                  navigate("/Inicio");
-                }
-              });
-          }
           if (cookies.get("Rol") == 3) {
             axios
               .get(infoProfesionista + "?id=" + respuesta.idUsuario)
@@ -101,28 +84,45 @@ const Login = () => {
                 }
               });
           }
+          if (cookies.get("Rol") == 2) {
+            axios
+              .get(infoCliente + "?id=" + respuesta.idUsuario)
+              .then((resp) => {
+                return resp.data;
+              })
+              .then((resp) => {
+                if (response.length > 0) {
+                  var respuestaCliente = resp[0];
+                  console.log("es un cliente");
+                  cookies.set("idCliente", respuestaCliente.idCliente, {
+                    path: "/"
+                  }
+                  );
+                  navigate("/Inicio");
+                }
+              });
+          }
           if (cookies.get("Rol") == 1){
             navigate("/GestionUsuarios");
           }
+        }if(response == 0){
+          Swal.fire(
+            'Error',
+            'Correo o Contraseña incorrecto, por favor, intente de nuevo.',
+            'error'
+          )  
         }
       })
-      setLogs({
-        idUsuario: cookies.get("idUsuario")
-      })
-      postLogs()
       .catch((error) => {
         console.log(error);
+        Swal.fire(
+          'Error',
+          'Correo o Contraseña incorrecto, por favor, intente de nuevo.',
+          'error'
+        )
       });
   };
 
-  const postLogs = async () => {
-    await axios.post(URLLogs,logs)
-    .then(response => {
-      if(response){
-      }
-    }).catch(error => {
-    })
-  }
 
   const handleNewClienteRegister = (e) => {
     navigate("/RegistrarCliente");
