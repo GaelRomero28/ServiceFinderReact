@@ -9,6 +9,7 @@ const GestionarImagenes = () => {
     const cookies = new Cookies()
     //cookies.get("idProfesionista")
     const baseURL = "https://localhost:44368/api/imagen";
+  const URLLogs = "https://localhost:44368/api/logs";
     const [modalInsertar,setModalInsertar]= useState(false);
     const [modalEliminar, setModalEliminar] = useState(false);
     const [imagenSeleccionada, setImagenSeleccionada] = useState({
@@ -17,6 +18,25 @@ const GestionarImagenes = () => {
         _imagen:""
       });
     const [imgs, setImgs] = useState([]);
+
+    let logss = {
+      fecha: new Date(),
+      descripcion: "",
+      idUsuario: 0
+    }
+
+    const postLogs = async () => {
+      await axios
+        .post(URLLogs, logss)
+        .then((response) => {
+          if (response) {
+            return;
+          }
+        })
+        .catch((error) => {
+          console.log(error)
+        });
+    };
 
     const abrirCerrarModalInsertar=()=>{
     setModalInsertar(!modalInsertar);
@@ -48,9 +68,15 @@ const GestionarImagenes = () => {
           if(response){
             Swal.fire(
               'Operación realizada',
-              'Servicio eliminado correctamente!',
+              'Imagen eliminado correctamente!',
               'success'
             )
+            logss.descripcion = "Elimino Imagen ";
+          logss.idUsuario = cookies.get("idUsuario");
+
+          postLogs().catch((error) => {
+            console.log(error);
+          });
             peticionGetImagenes();
           }
         }).catch(error => {
@@ -62,7 +88,7 @@ const GestionarImagenes = () => {
           )
         })
         abrirCerrarModalEliminar();
-        peticionGet();
+        peticionGetImagenes();
     }
   
     
@@ -101,6 +127,12 @@ const GestionarImagenes = () => {
             'Imagen Guardada correctamente!',
             'success'
           )
+          logss.descripcion = "Registro una nueva imagen ";
+          logss.idUsuario = cookies.get("idUsuario");
+
+          postLogs().catch((error) => {
+            console.log(error);
+          });
           return;
         }
       }).catch((error) => {
@@ -110,6 +142,12 @@ const GestionarImagenes = () => {
           'Se produjo un error al insertar la información, por favor, intente de nuevo.',
           'error'
         )
+        logss.descripcion = "Error al insertar una imagen ";
+          logss.idUsuario = cookies.get("idUsuario");
+
+          postLogs().catch((error) => {
+            console.log(error);
+          });
       })
       abrirCerrarModalInsertar();
       peticionGetImagenes();
@@ -123,7 +161,7 @@ const GestionarImagenes = () => {
     <>
     <NavBar></NavBar>
     <br />
-      <button style={{float:"right",marginTop:"-10px",marginRight:"10px"}} onClick={()=>abrirCerrarModalInsertar()} className="btn btn-primary btn-lg btn-block">Insertar Nueva Reseña</button>
+      <button style={{float:"right",marginTop:"-10px",marginRight:"10px"}} onClick={()=>abrirCerrarModalInsertar()} className="btn btn-primary btn-lg btn-block">Insertar Nueva Imagen</button>
       <br />
       <br />
       <table className='table table-bordered'>

@@ -17,7 +17,8 @@
     "react-router-dom": "^6.4.4",
     "reactstrap": "^9.1.5",
     "sweetalert2": "^11.6.15",
-    "universal-cookie": "^4.0.4"
+    "universal-cookie": "^4.0.4",
+    "vite-plugin-pwa": "^0.14.0"
   },
   "devDependencies": {
     "@types/react": "^18.0.24",

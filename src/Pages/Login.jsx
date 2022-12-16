@@ -20,6 +20,13 @@ const Login = () => {
     idUsuario: 0,
   });
 
+
+  let logss = {
+    fecha: new Date(),
+    descripcion: "Inicio de Sesion",
+    idUsuario: 0
+  };
+
   const [inicioSesion, setInicioSesion] = useState({
     correo: "",
     contrasenia: "",
@@ -44,6 +51,8 @@ const Login = () => {
         if (response.length > 0) {
           var respuesta = response[0];
           cookies.set("idUsuario", respuesta.idUsuario, { path: "/" });
+          console.log("este es el id"+ respuesta.idUsuario);
+          logss.idUsuario = respuesta.idUsuario;
           cookies.set("nombre", respuesta.nombre, { path: "/" });
           cookies.set("apellidoPaterno", respuesta.apellidoPaterno, {
             path: "/",
@@ -54,6 +63,8 @@ const Login = () => {
           cookies.set("Rol", respuesta.idRol, { path: "/" });
           cookies.set("correo", respuesta.correo, { path: "/" });
           cookies.set("contraseña", respuesta.contrasenia, { path: "/" });
+
+          
           if (cookies.get("Rol") == 2) {
             axios
               .get(infoCliente + "?id=" + respuesta.idUsuario)
@@ -68,13 +79,23 @@ const Login = () => {
                   cookies.set("idCliente", respuestaCliente.idCliente, {
                     path: "/",
                   });
-                  setLogs({
-                    idUsuario: cookies.get("idUsuario"),
-                  });
-                  postLogs().catch((error) => {
-                    console.log(error);
-                  });
-                  navigate("/Inicio");
+                  const entrar = async () => {
+                    
+                    console.log("idLogs:"+logss.idUsuario);
+                    await postLogs();
+                    return navigate("/Inicio");
+                  }
+                  entrar();
+
+                  // setLogs({
+                  //   idUsuario: respuesta.idUsuario,
+                  //   descripcion: "Inicio de Sesion",
+                  //   fecha: new Date()
+                  // })
+                  //  postLogs().catch((error) => {
+                  //   console.log(error);
+                  // });
+                  // navigate("/Inicio");
                 }
               });
           }
@@ -104,8 +125,11 @@ const Login = () => {
                     { path: "/" }
                   );
                   setLogs({
-                    idUsuario: cookies.get("idUsuario"),
-                  });
+                    idUsuario: respuesta.idUsuario,
+                    descripcion: "Inicio de Sesion",
+                    fecha: new Date()
+                  })
+
                   postLogs().catch((error) => {
                     console.log(error);
                   });
@@ -122,19 +146,32 @@ const Login = () => {
             });
             navigate("/GestionUsuarios");
           }
+        }if(response == 0){
+          logss.descripcion = "Inicio de sesion Fallido " + inicioSesion.correo;
+          postLogs().catch((error) => {
+            console.log(error);
+          });
+          Swal.fire(
+            'Error',
+            'Se produjo un error al eliminar la información, por favor, intente de nuevo.',
+            'error'
+          )
+          
         }
       });
   };
 
   const postLogs = async () => {
     await axios
-      .post(URLLogs, logs)
+      .post(URLLogs, logss)
       .then((response) => {
         if (response) {
           return;
         }
       })
-      .catch((error) => {});
+      .catch((error) => {
+        console.log(error)
+      });
   };
 
   const handleNewClienteRegister = (e) => {

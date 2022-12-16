@@ -52,8 +52,8 @@ const ReseniasHechas = () => {
         <div class="card text-left">
           <img class="card-img-top" src="holder.js/100px180/" alt=""/>
           <div class="card-body">
-            <h4 class="card-title">{asignarProfesionista(resenias.idProfesionista)}<b>{resenias.calificacion}</b><img width={30} src={star}></img></h4>
-            <p class="card-text">{resenias.comentario}</p>
+            <h4 class="card-title">{asignarProfesionista(resenias.idProfesionista)}<b>{resenias.calificacion} </b><img width={30} src={star}></img></h4>
+            <p class="card-text">Comentario Hecho: {resenias.comentario}</p>
           </div>
         </div>
       </div>

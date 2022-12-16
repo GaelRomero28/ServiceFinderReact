@@ -10,6 +10,8 @@ const MiPerfil = () => {
     const cookies = new Cookies();
     const [data, setData] =useState([]);
     const baseURL = "https://localhost:44368/api/cliente";
+  const URLLogs = "https://localhost:44368/api/logs";
+
     const [modalEditar, setModalEditar]=useState(false);
     const [usuarioSeleccionado,setUsuarioSeleccionado] = useState({
         idUsuario: cookies.get("idUsuario"),
@@ -19,6 +21,25 @@ const MiPerfil = () => {
         correo: "",
         contrasenia: ""
       })
+
+      const postLogs = async () => {
+        await axios
+          .post(URLLogs, logss)
+          .then((response) => {
+            if (response) {
+              return;
+            }
+          })
+          .catch((error) => {
+            console.log(error)
+          });
+      };
+
+      let logss = {
+        fecha: new Date(),
+        descripcion: "",
+        idUsuario: 0
+      }
 
     const abrirCerrarModalEditar=()=>{
         setModalEditar(!modalEditar);
@@ -57,6 +78,11 @@ const MiPerfil = () => {
                   'Informacion modificada correctamente!',
                   'success'
                 )
+                logss.idUsuario = cookies.get("idUsuario");
+                logss.descripcion = "Actualizacion de perfil";
+                postLogs().catch((error) => {
+                  console.log(error);
+                });
               }
             }).catch(error=>{
               console.log(error);

@@ -5,6 +5,8 @@ import axios from "axios"
 
 const RegisterCliente = () => {
   const baseURL = "https://localhost:44368/api/Cliente";
+  const URLLogs = "https://localhost:44368/api/logs";
+
     const navigate = useNavigate();
     const [cliente,setCliente] = useState({
       idUsuario:0,
@@ -38,7 +40,24 @@ const RegisterCliente = () => {
         Registrarse();
       }
     }
+    let logss = {
+      fecha: new Date(),
+      descripcion: "",
+      idUsuario: 0
+    }
 
+    const postLogs = async () => {
+      await axios
+        .post(URLLogs, logss)
+        .then((response) => {
+          if (response) {
+            return;
+          }
+        })
+        .catch((error) => {
+          console.log(error)
+        });
+    };
 
     const Registrarse = async() =>{
       delete cliente.idUsuario;
@@ -51,6 +70,12 @@ const RegisterCliente = () => {
             icon: 'success',
             confirmButtonText: 'Entendido'
           })
+          logss.descripcion = "Se registro un nuevo cliente ";
+          logss.idUsuario = cliente.correo;
+
+          postLogs().catch((error) => {
+            console.log(error);
+          });
           navigate("/")    
         }
       })

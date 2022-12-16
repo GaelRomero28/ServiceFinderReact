@@ -6,7 +6,9 @@ import axios from "axios"
 const RegisterProfesionista = () => {
 
   const baseURL = "https://localhost:44368/api/profesionista";
-  const profesionesURL ="https://localhost:44368/api/profesion"
+  const profesionesURL ="https://localhost:44368/api/profesion";
+  const URLLogs = "https://localhost:44368/api/logs";
+
     const navigate = useNavigate();
     const [profesiones,setProfesiones] = useState([])
     const [profesionista,setProfesionista] = useState({
@@ -20,6 +22,24 @@ const RegisterProfesionista = () => {
       idProfesion: 0,
       idRol:3
     })
+    let logss = {
+      fecha: new Date(),
+      descripcion: "",
+      idUsuario: 0
+    }
+
+    const postLogs = async () => {
+      await axios
+        .post(URLLogs, logss)
+        .then((response) => {
+          if (response) {
+            return;
+          }
+        })
+        .catch((error) => {
+          console.log(error)
+        });
+    };
 
     const Registrarse = async() =>{
       delete profesionista.idUsuario;
@@ -32,6 +52,12 @@ const RegisterProfesionista = () => {
             icon: 'success',
             confirmButtonText: 'Entendido'
           })
+          logss.descripcion = "Se registro un nuevo profesionista ";
+          logss.idUsuario = profesionista.correo;
+
+          postLogs().catch((error) => {
+            console.log(error);
+          });
           navigate("/")    
         }
       })

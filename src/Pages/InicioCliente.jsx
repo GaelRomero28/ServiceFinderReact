@@ -56,9 +56,15 @@ const Menu = (props) => {
 
   const [logs, setLogs] = useState({
     fecha: new Date(),
-    descripcion: " ",
+    descripcion: "",
     idUsuario: 0,
   });
+
+  let logss = {
+    fecha: new Date(),
+    descripcion: "",
+    idUsuario: 0
+  }
 
   const abrirCerrarModalInsertar = (id) => {
     getProfesionistaPorId(id);
@@ -77,13 +83,15 @@ const Menu = (props) => {
 
   const postLogs = async () => {
     await axios
-      .post(URLLogs, logs)
+      .post(URLLogs, logss)
       .then((response) => {
         if (response) {
           return;
         }
       })
-      .catch((error) => {});
+      .catch((error) => {
+        console.log(error)
+      });
   };
 
   const getProfesionistas = async () => {
@@ -167,6 +175,8 @@ const Menu = (props) => {
             idUsuario: cookies.get("idUsuario"),
             descripcion: "Registro una reseña",
           });
+          logss.idUsuario = cookies.get("idUsuario");
+          logss.descripcion = "Registro una reseña";
           postLogs().catch((error) => {
             console.log(error);
           });
@@ -200,6 +210,8 @@ const Menu = (props) => {
             idUsuario: cookies.get("idUsuario"),
             descripcion: "Peticion de Solicitud",
           });
+          logss.idUsuario = cookies.get("idUsuario");
+          logss.descripcion = "Peticion de Solicitud Enviada";
           postLogs().catch((error) => {
             console.log(error);
           });
@@ -306,7 +318,7 @@ const Menu = (props) => {
                     profesionista.apellidoMaterno}
                 </p>
               </h1>
-              <h3>Profesion</h3>
+              <h3>Profesionista</h3>
             </div>
           </div>
           <hr />

@@ -9,7 +9,9 @@ const SolicitudesEnviadas = () => {
     const cookies = new Cookies();
 
     const listasSolicitudes = "https://localhost:44368/api/solicitud";
+    const listarProfesionista = "https://localhost:44368/api/profesionista";
 
+    const [dataProfesionista,setDataProfesionista] = useState([]);
     
     const peticionGetSolicitudesEnviadas= async()=>{
         await axios.get(listasSolicitudes +"?idCte=" + cookies.get("idCliente"))
@@ -21,11 +23,32 @@ const SolicitudesEnviadas = () => {
         })
         }
       
+        
+      const getProfesionistas = ()=>{
+        axios
+       .get(listarProfesionista)
+       .then((respuesta) => {
+        setDataProfesionista(respuesta.data)
+        console.log(respuesta.data)
+      })
+       .catch((error) => {
+         console.log(error);
+       });
+     };
+
+      
       
     
     useEffect(() => {
         peticionGetSolicitudesEnviadas();
+        getProfesionistas();
     }, []);
+
+    const asignarProfesionista = (id) =>{
+    
+      let prof = dataProfesionista.find(profesionista => profesionista.idProfesionista === id)
+      return prof.nombre + " " + prof.apellidoPaterno + " "
+    }
 
     function ValidarEstatus(id){
         switch(id){
@@ -49,7 +72,7 @@ const SolicitudesEnviadas = () => {
         <NavBar></NavBar>
         <table className='table table-bordered' style={{padding:"10px", marginTop:"10px"}}>
           <thead>
-              <th>idProfresionista</th>
+              <th>Profesionista</th>
               <th>Fecha</th>
               <th>Telefono</th>            
               <th>descripcion del Problema</th>            
@@ -58,7 +81,7 @@ const SolicitudesEnviadas = () => {
           <tbody>
             {datosSolicitudes.map((solicitudes) =>(
               <tr key={solicitudes.idSolicitud}>
-                <td>{solicitudes.idProfesionista}</td>
+                <td>{asignarProfesionista(solicitudes.idProfesionista)}</td>
                 <td>{solicitudes.fechaSolicitud}</td>
                 <td>{solicitudes.telefono}</td>
                 <td>{solicitudes.descripcion}</td>
